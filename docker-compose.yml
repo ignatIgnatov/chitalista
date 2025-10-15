@@ -12,9 +12,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./01-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
-#      - ./02-data.sql:/docker-entrypoint-initdb.d/02-data.sql
-#      - ./03-data.sql:/docker-entrypoint-initdb.d/03-data.sql
     networks:
       - articles-network
     healthcheck:

@@ -1,73 +1,51 @@
 package com.community_centers.service.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-import java.util.ArrayList;
-import java.util.List;
+import lombok.Setter;
 
 @Entity
-@Table(name = "chitalishte")
-@Data
 @NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString(exclude = "informationCards")
+@Getter
+@Setter
+@Table
 public class Chitalishte {
-
     @Id
-    @Column(name = "registration_number")
-    @EqualsAndHashCode.Include
-    private Integer registrationNumber;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    @Column(name = "address")
-    private String address;
-
-    @Column(name = "bulstat")
-    private String bulstat;
-
-    @Column(name = "chairman")
-    private String chairman;
-
-    @Column(name = "chitalishta_url")
-    private String chitalishtaUrl;
-
-    @Column(name = "email")
-    private String email;
-
-    @Column(name = "municipality")
-    private String municipality;
-
-    @Column(name = "name")
     private String name;
 
-    @Column(name = "phone")
-    private String phone;
+    private String chitalishtaUrl;
 
-    @Column(name = "region")
-    private String region;
+    private String status; //Действащо/Закрито
 
-    @Column(name = "secretary")
+    @Column(unique = true)
+    private String bulstat;
+
+    private String chairman;
+
     private String secretary;
 
-    @Column(name = "status")
-    private String status;
+    private String phone;
 
-    @Column(name = "town")
+    private String email;
+
+    private String region;
+
+    private String municipality;
+
     private String town;
 
-    @Column(name = "url_to_libraries_site")
+    private String address;
+
     private String urlToLibrariesSite;
 
-    @OneToMany(mappedBy = "chitalishte", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<InformationCard> informationCards = new ArrayList<>();
+    private int registrationNumber;
 }
