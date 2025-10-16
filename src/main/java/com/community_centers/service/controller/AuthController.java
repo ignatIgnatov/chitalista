@@ -2,7 +2,11 @@ package com.community_centers.service.controller;
 
 import com.community_centers.service.dto.LoginRequest;
 import com.community_centers.service.dto.JwtResponse;
+import com.community_centers.service.dto.UserResponse;
+import com.community_centers.service.entity.User;
+import com.community_centers.service.repository.UserRepository;
 import com.community_centers.service.security.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +23,16 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider tokenProvider;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private JwtTokenProvider tokenProvider;
+
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
@@ -48,7 +53,16 @@ public class AuthController {
 
             logger.info("JWT token generated successfully for user: {}", loginRequest.getUsername());
 
-            return ResponseEntity.ok(new JwtResponse(jwt));
+            User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(
+                    () -> new RuntimeException("User not found")
+            );
+
+            UserResponse userResponse = new UserResponse();
+            userResponse.setId(user.getId());
+            userResponse.setRole(user.getRole());
+            userResponse.setUsername(user.getUsername());
+
+            return ResponseEntity.ok(new JwtResponse(jwt, userResponse));
 
         } catch (BadCredentialsException e) {
             logger.warn("Bad credentials for user: {}", loginRequest.getUsername());
